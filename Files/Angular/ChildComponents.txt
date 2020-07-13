@@ -1,0 +1,26 @@
+#declare EntityName:string
+#declare FriendlyNam:string
+#declare PropertyName:string
+#declare Extra:string
+${EntityName="Order"}$
+${PropertyName="orderLines"}$
+${FriendlyNam="Line"}$
+${Extra = ";trackBy:trackByIndex"}$
+<div class="section col-sm-12">
+          <button class="btn btn-link" (click)="$EntityName.$PropertyName.push({{}})"><fa-icon [icon]="fa.faPlusCircle"></fa-icon>add $FriendlyNam</button>
+          <table class="table">
+            <thead class="thead-light">
+              <tr class="d-flex">
+                <th class="col col-4" scope="col">Property</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="d-flex" *ngFor="let child of $EntityName.$PropertyName; let i=index $Extra">
+               <fa-icon (click)="$EntityName.$PropertyName.splice($EntityName.$PropertyName.indexOf(child),1)" [icon]="fa.faMinusCircle" class="float-right"></fa-icon>
+                  <td class="col col-4">
+                 <span> {{{{child|json}}}}</span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+   </div>

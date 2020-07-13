@@ -1,0 +1,22 @@
+#declare Label:string
+#declare EntityName:string
+#declare PropertyName:string
+#declare AdditionalProperties:string
+#declare Collection:String
+#declare CollectionExtra:String
+#declare BindTo:String
+#declare DisplayTo:String
+${EntityName="Order"}$
+${PropertyName="orderStatusCode"}$
+${Label="Status"}$
+${AdditionalProperties = @"autocomplete=""off"" "}$
+${Collection="this.mainService.LookupTables.orderStatus"}$
+${CollectionExtra = "| orderby:'name'"}$
+${BindTo = "code"}$
+${DisplayTo = "name"}$
+<div class="form-group">
+          <label for="$EntityName-$PropertyName">$Label</label>
+          <select class="form-control" name="$EntityName-$PropertyName" id="$EntityName-$PropertyName" [(ngModel)]="$EntityName.$PropertyName">
+            <option *ngFor="let child of $Collection $CollectionExtra" [value]="child.$BindTo">{{{{child.$DisplayTo}}}}</option>
+          </select>
+</div>

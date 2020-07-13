@@ -1,0 +1,12 @@
+#declare Id:string
+#declare Title:string
+${Id="Address-Panel"}$
+${Title="Address"}$
+<ngb-panel class="$Id" id="$Id">
+      <ng-template ngbPanelTitle>
+        <span for="$Id" class="$Id-header">$Title </span>
+      </ng-template>
+      <ng-template ngbPanelContent>
+      	<span>content Goes here</span>
+      </ng-template>
+</ngb-panel>

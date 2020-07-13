@@ -1,0 +1,14 @@
+#declare Label:string
+#declare EntityName:string
+#declare PropertyName:string
+#declare AdditionalProperties:string
+#declare InputType:String
+${EntityName="Order"}$
+${PropertyName="deliveryCharge"}$
+${Label="Delivery Charge"}$
+${InputType="text"}$
+${AdditionalProperties = @"autocomplete=""off"" "}$
+<div class="form-group">
+          <label for="$EntityName-$PropertyName">$Label</label>
+          <input name="$EntityName-$PropertyName" id="$EntityName-$PropertyName" type="$InputType" required class="form-control" [(ngModel)]="$EntityName.$PropertyName" />
+</div>
