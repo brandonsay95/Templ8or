@@ -19,27 +19,69 @@ using System.IO;
 using System.CodeDom.Compiler;
 using System.CodeDom;
 using Microsoft.CodeAnalysis.Scripting;
+using System.ComponentModel;
+using Microsoft.Win32;
 
 namespace Templ8or
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class MainWindow : Window, INotifyPropertyChanged
     {
-        [DllImport("kernel32")]
-        static extern bool AllocConsole();
         public MainWindow()
-        {            InitializeComponent();
+        {
 
-            //  AllocConsole();
+
+            this.DataContext = this;
+            InitializeComponent();
             this.textEditor.Text = @"#declare var:string
 #declare var1:string
 ${var = ""Hello""}$
 ${var1 = ""World""}$
 $var $var1 :)";
             Button_Click(null, null);
+            ResetFiles();
         }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        private void ResetFiles()
+        {
+            var starupDir = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Files");
+
+            Files = new Dictionary<string, List<string>>();
+            if (System.IO.Directory.Exists(starupDir))
+            {
+                foreach (var folder in System.IO.Directory.GetDirectories(starupDir))
+                {
+                    var f = new KeyValuePair<string, List<string>>(System.IO.Path.GetFileName(folder), new List<string>());
+                    foreach (var file in System.IO.Directory.GetFiles(folder))
+                    {
+                        f.Value.Add(System.IO.Path.GetFileName(file));
+
+                    }
+                    Files.Add(f.Key, f.Value);
+                }
+
+
+            }
+            else
+            {
+                System.IO.Directory.CreateDirectory(starupDir);
+                System.IO.Directory.CreateDirectory(System.IO.Path.Combine(starupDir, "ProjectA"));
+                System.IO.File.WriteAllText(System.IO.Path.Combine(System.IO.Path.Combine(starupDir, "ProjectA"), "File1.txt"), @"#declare var:string
+#declare var1:string
+${var = ""Hello""}$
+${var1 = ""World""}$
+$var $var1 :)");
+
+                ResetFiles();
+            }
+
+            PropertyChanged(this, new PropertyChangedEventArgs("Files"));
+        }
+
         private static string ToLiteral(string input)
         {
             using (var writer = new StringWriter())
@@ -51,6 +93,33 @@ $var $var1 :)";
                     return writer.ToString();
                 }
             }
+        }
+        private void handleFileDialog<T>(Action<T> onOpen) where T : FileDialog
+        {
+            var fileDialog = Activator.CreateInstance<T>();
+            fileDialog.InitialDirectory = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Files");
+            fileDialog.Filter = "Text File(*.txt)|*.txt";
+            if (fileDialog.ShowDialog() ?? false)
+            {
+                
+                onOpen(fileDialog);
+            }
+        }
+        private void saveFileAs(object sender, RoutedEventArgs e)
+        {
+            handleFileDialog<SaveFileDialog>((saveFileDialog) => {
+                File.WriteAllText(saveFileDialog.FileName, textEditor.Text);
+                ResetFiles();
+            });
+        }
+        private void openFile(object sender, RoutedEventArgs e)
+        {
+            handleFileDialog<OpenFileDialog>((openFileDialog) => this.textEditor.Text = File.ReadAllText(openFileDialog.FileName));
+        }
+        private void newFile(object sender, RoutedEventArgs e)
+        {
+            this.textEditor.Text = "";
+
         }
         private void Button_Click(object sender, RoutedEventArgs e)
         {
@@ -102,11 +171,11 @@ $var $var1 :)";
                 newCode = compiledCode + System.Environment.NewLine + newCode;
 
                 var result = CSharpScript.EvaluateAsync(newCode, ScriptOptions.Default.WithImports("System")).Result;
-                textEditoroutput.Text = result.ToString();
+                output.Text = result.ToString();
             }
-            catch(Exception exc)
+            catch (Exception exc)
             {
-                textEditoroutput.Text = exc.ToString();
+                output.Text = exc.ToString();
             }
         }
 
@@ -115,7 +184,34 @@ $var $var1 :)";
             Button_Click(null, null);
 
         }
-    }
+        public Dictionary<string, List<string>> Files { get; set; }
 
-  
+        private void TextBlock_MouseUp(object sender, MouseButtonEventArgs e)
+        {
+            var fileName = ((System.Windows.Controls.TextBlock)sender).Text;
+            var starupDir = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Files");
+            if (System.IO.Directory.Exists(starupDir))
+            {
+                foreach (var folder in System.IO.Directory.GetDirectories(starupDir))
+                {
+                    foreach (var file in System.IO.Directory.GetFiles(folder))
+                    {
+                        if (fileName == System.IO.Path.GetFileName(file)){
+                            this.textEditor.Text = System.IO.File.ReadAllText(file);
+                            Button_Click(null, null);
+                        }
+
+                    }
+                   
+                }
+
+
+            }
+        }
+
+        private void MenuItem_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+    }
 }

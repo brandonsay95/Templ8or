@@ -5,34 +5,79 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Templ8or"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
-    <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="*">
+        xmlns:sys="clr-namespace:System;assembly=mscorlib"
+        Title="Templ8or_cs" Height="482.781" Width="653.974">
+    <Window.Resources>
+       
+    </Window.Resources>
+    <DockPanel>
+        <Menu DockPanel.Dock="Top">
+            <MenuItem Header="File">
+                <MenuItem Header="New" Click="newFile"/>
+                <MenuItem Click="openFile" Header="Open"/>
+              
+                <MenuItem Click="saveFileAs" Header="Save As.."/>
+            </MenuItem>
+            <!--<MenuItem Header="Edit">
+                <MenuItem Header="Add to Menubar"/>
+                <MenuItem Header="Remove from Menubar"/>
+            </MenuItem>
+            <MenuItem Header="Help">
+                <MenuItem Header="About"/>
+            </MenuItem>-->
+        </Menu>
+        <Grid DockPanel.Dock="Bottom">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="100"></ColumnDefinition>
+                <ColumnDefinition Width="auto"></ColumnDefinition>
+                <ColumnDefinition Width="3*"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            <Grid Grid.Column="0" Width="auto">
+                <ItemsControl ItemsSource="{Binding Files}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel>
+                                <TextBlock Margin="10,0,10,0" Text="{Binding Key}"></TextBlock>
+                                <ItemsControl  Margin="10,0,10,0" ItemsSource="{Binding Value}">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <StackPanel>
+                                                <TextBlock MouseUp="TextBlock_MouseUp"  Margin="10,0,10,0" Text="{Binding }"></TextBlock>
+                                            </StackPanel>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </StackPanel>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </Grid>
+            <Grid Grid.Column="2">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition ></RowDefinition>
+                        <RowDefinition Height="150"></RowDefinition>
+                        <RowDefinition Height="20"></RowDefinition>
+                    </Grid.RowDefinitions>
+                    <avalonEdit:TextEditor Margin="1" Grid.Row="0" 
+                        xmlns:avalonEdit="http://icsharpcode.net/sharpdevelop/avalonedit"
+                        Name="textEditor"
+                        SyntaxHighlighting="C#"
+                        FontFamily="Consolas"
+                        FontSize="10pt" KeyUp="textEditor_KeyDown"/>   
 
-            </RowDefinition>
+                    <avalonEdit:TextEditor Margin="1" Grid.Row="1"  Background="#FFB8B8B8"
+                    xmlns:avalonEdit="http://icsharpcode.net/sharpdevelop/avalonedit"
+                                           Name="output"
+                   IsReadOnly="True"
+                    SyntaxHighlighting="C#"   
+                    FontFamily="Consolas"
+                    FontSize="10pt"/>   
+                    <Label Grid.Row="2" Height="30" Content="File 1.tm8" DockPanel.Dock="Bottom"></Label>
+                </Grid>
 
-            <RowDefinition Height="100px">
+            </Grid>
+        </Grid>
 
-            </RowDefinition>
-        </Grid.RowDefinitions>
-        <avalonEdit:TextEditor
-    xmlns:avalonEdit="http://icsharpcode.net/sharpdevelop/avalonedit"
-    Name="textEditor"
-    SyntaxHighlighting="C#"
-            
-            KeyUp="textEditor_KeyDown"
-    FontFamily="Consolas"
-             Grid.Row="0"
-    FontSize="10pt"/>
-
-        <avalonEdit:TextEditor
-    xmlns:avalonEdit="http://icsharpcode.net/sharpdevelop/avalonedit"
-    Name="textEditoroutput"
-    SyntaxHighlighting="C#"
-    FontFamily="Consolas"
-  
-            Grid.Row="1"
-    FontSize="10pt" Background="#FF494949"/>
-    </Grid>
+    </DockPanel>
 </Window>

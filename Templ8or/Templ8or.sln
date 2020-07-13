@@ -1,9 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.29519.87
+# Visual Studio 15
+VisualStudioVersion = 15.0.28307.572
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Templ8or", "Templ8or\Templ8or.csproj", "{E7676FF2-FC21-4072-92B4-C91798616D80}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Templ8or", "Templ8or\Templ8or.csproj", "{BE465FA7-BF33-40B0-9190-D44521F78935}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -11,15 +11,15 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{E7676FF2-FC21-4072-92B4-C91798616D80}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{E7676FF2-FC21-4072-92B4-C91798616D80}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{E7676FF2-FC21-4072-92B4-C91798616D80}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{E7676FF2-FC21-4072-92B4-C91798616D80}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BE465FA7-BF33-40B0-9190-D44521F78935}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BE465FA7-BF33-40B0-9190-D44521F78935}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BE465FA7-BF33-40B0-9190-D44521F78935}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BE465FA7-BF33-40B0-9190-D44521F78935}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {BBE1E6EE-3250-46D2-A5E4-C6DD2F39935A}
+		SolutionGuid = {DB87B385-7163-4D84-8DE7-3E3B7F7A642E}
 	EndGlobalSection
 EndGlobal
