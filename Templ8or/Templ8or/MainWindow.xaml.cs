@@ -246,6 +246,7 @@ $var $var1 :)");
 
                 }
             }
+            this.Button_Click(this, null);
 
         }
         public Solution Solution { get; set; }
