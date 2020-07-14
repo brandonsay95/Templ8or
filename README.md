@@ -71,5 +71,3 @@ ex
       File C
       File D
       ```
-DO NOT name the files the same name (bug)
-
