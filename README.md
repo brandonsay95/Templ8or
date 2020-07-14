@@ -61,6 +61,7 @@ ${AdditionalProperties = @"autocomplete=""off"" "}$
 
 ```
 Project also has a rudimentary file system using the applications starting directory + "/Files" to store a folder file combo
+```json
 ex 
   Files
     Project A
@@ -69,5 +70,6 @@ ex
      Project B
       File C
       File D
+      ```
 DO NOT name the files the same name (bug)
 
