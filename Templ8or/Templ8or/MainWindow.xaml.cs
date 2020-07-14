@@ -21,9 +21,37 @@ using System.CodeDom;
 using Microsoft.CodeAnalysis.Scripting;
 using System.ComponentModel;
 using Microsoft.Win32;
+using Templ8or.Models;
+using System.Globalization;
 
 namespace Templ8or
 {
+    public class IsNullConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return (value == null);
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new InvalidOperationException("IsNullConverter can only be used OneWay.");
+        }
+    }
+
+
+    public class IsNotNullConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return (value != null);
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new InvalidOperationException("IsNullConverter can only be used OneWay.");
+        }
+    }
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
@@ -45,24 +73,21 @@ $var $var1 :)";
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
-
+        public Workspace Workspace { get; set; }
         private void ResetFiles()
         {
             var starupDir = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Files");
-
-            Files = new Dictionary<string, List<string>>();
+            var workspace = new Workspace();
+            workspace.FolderPath = starupDir;
+            workspace.FolderName = "Files";
+            workspace.LoadWorkspace();
+            this.Workspace = workspace;
+            workspace.OnFileLoaded += Workspace_OnFileLoaded;
+            PropertyChanged(this, new PropertyChangedEventArgs("Workspace"));
+          
             if (System.IO.Directory.Exists(starupDir))
             {
-                foreach (var folder in System.IO.Directory.GetDirectories(starupDir))
-                {
-                    var f = new KeyValuePair<string, List<string>>(System.IO.Path.GetFileName(folder), new List<string>());
-                    foreach (var file in System.IO.Directory.GetFiles(folder))
-                    {
-                        f.Value.Add(System.IO.Path.GetFileName(file));
-
-                    }
-                    Files.Add(f.Key, f.Value);
-                }
+              
 
 
             }
@@ -78,8 +103,15 @@ $var $var1 :)");
 
                 ResetFiles();
             }
+        }
+        public Document CurrentFile { get; set; }
+        private void Workspace_OnFileLoaded(object sender, DocumentLoadingEvent args)
+        {
+          
+                  this.textEditor.Text = System.IO.File.ReadAllText(args.Document.FilePath);
+            this.CurrentFile = args.Document;
 
-            PropertyChanged(this, new PropertyChangedEventArgs("Files"));
+            PropertyChanged(this, new PropertyChangedEventArgs("CurrentFile"));
         }
 
         private static string ToLiteral(string input)
@@ -111,6 +143,29 @@ $var $var1 :)");
                 File.WriteAllText(saveFileDialog.FileName, textEditor.Text);
                 ResetFiles();
             });
+        }
+        private void SaveFile(object sender, RoutedEventArgs e)
+        {
+            if(this.CurrentFile == null)
+            { MessageBox.Show( "You dont have a file selected", "Oh no!");
+                return;
+
+            }
+            File.WriteAllText(CurrentFile.FilePath, textEditor.Text);
+        }
+        private void deletFile(object sender, RoutedEventArgs e)
+        {
+            if (this.CurrentFile == null)
+            {
+                MessageBox.Show("You dont have a file selected", "Oh no!");
+                return;
+
+            }
+            File.Delete(CurrentFile.FilePath);
+            this.CurrentFile = null;
+            this.ResetFiles();
+            PropertyChanged(this, new PropertyChangedEventArgs("CurrentFile"));
+
         }
         private void openFile(object sender, RoutedEventArgs e)
         {
@@ -181,33 +236,22 @@ $var $var1 :)");
 
         private void textEditor_KeyDown(object sender, KeyEventArgs e)
         {
-            Button_Click(null, null);
+            if (e.Key == Key.S && Keyboard.Modifiers == ModifierKeys.Control)
+            {
+                if (this.CurrentFile == null)
+                    this.saveFileAs(this,null);
+                else
+                {
+                    this.SaveFile(this, null);
+
+                }
+            }
 
         }
+        public Solution Solution { get; set; }
         public Dictionary<string, List<string>> Files { get; set; }
 
-        private void TextBlock_MouseUp(object sender, MouseButtonEventArgs e)
-        {
-            var fileName = ((System.Windows.Controls.TextBlock)sender).Text;
-            var starupDir = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Files");
-            if (System.IO.Directory.Exists(starupDir))
-            {
-                foreach (var folder in System.IO.Directory.GetDirectories(starupDir))
-                {
-                    foreach (var file in System.IO.Directory.GetFiles(folder))
-                    {
-                        if (fileName == System.IO.Path.GetFileName(file)){
-                            this.textEditor.Text = System.IO.File.ReadAllText(file);
-                            Button_Click(null, null);
-                        }
-
-                    }
-                   
-                }
-
-
-            }
-        }
+    
 
         private void MenuItem_Click(object sender, RoutedEventArgs e)
         {

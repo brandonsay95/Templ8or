@@ -8,15 +8,20 @@
         xmlns:sys="clr-namespace:System;assembly=mscorlib"
         Title="Templ8or_cs" Height="482.781" Width="653.974">
     <Window.Resources>
-       
+        <local:IsNotNullConverter x:Key="IsNotNullConverter" />
+        <local:IsNullConverter x:Key="IsNullConverter" />
+
     </Window.Resources>
     <DockPanel>
         <Menu DockPanel.Dock="Top">
             <MenuItem Header="File">
                 <MenuItem Header="New" Click="newFile"/>
+                <MenuItem Header="Save" Click="SaveFile"/>
                 <MenuItem Click="openFile" Header="Open"/>
-              
-                <MenuItem Click="saveFileAs" Header="Save As.."/>
+
+                <MenuItem Click="saveFileAs" IsEnabled="{Binding CurrentFile  ,Converter={StaticResource IsNotNullConverter}}" Header="Save As.."/>
+
+                <MenuItem Click="deletFile" IsEnabled="{Binding CurrentFile ,  Converter={StaticResource IsNotNullConverter}}" Header="Delete"/>
             </MenuItem>
             <!--<MenuItem Header="Edit">
                 <MenuItem Header="Add to Menubar"/>
@@ -33,16 +38,21 @@
                 <ColumnDefinition Width="3*"></ColumnDefinition>
             </Grid.ColumnDefinitions>
             <Grid Grid.Column="0" Width="auto">
-                <ItemsControl ItemsSource="{Binding Files}">
+                <ItemsControl ItemsSource="{Binding Workspace.Solutions}">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
                             <StackPanel>
-                                <TextBlock Margin="10,0,10,0" Text="{Binding Key}"></TextBlock>
-                                <ItemsControl  Margin="10,0,10,0" ItemsSource="{Binding Value}">
+                                <TextBlock Margin="10,0,10,0" Text="{Binding FolderName}"></TextBlock>
+                                <ItemsControl  Margin="10,0,10,0" ItemsSource="{Binding Documents}">
                                     <ItemsControl.ItemTemplate>
                                         <DataTemplate>
                                             <StackPanel>
-                                                <TextBlock MouseUp="TextBlock_MouseUp"  Margin="10,0,10,0" Text="{Binding }"></TextBlock>
+                                                <TextBlock Margin="10,0" Text="{Binding FileName }" Cursor="Hand">
+                                                    <TextBlock.InputBindings>
+                                                        <MouseBinding Command="{Binding LoadFile}" MouseAction="LeftClick"/>
+                                                    </TextBlock.InputBindings>
+                                                </TextBlock>
+                                               
                                             </StackPanel>
                                         </DataTemplate>
                                     </ItemsControl.ItemTemplate>
@@ -64,7 +74,9 @@
                         Name="textEditor"
                         SyntaxHighlighting="C#"
                         FontFamily="Consolas"
-                        FontSize="10pt" KeyUp="textEditor_KeyDown"/>   
+                        FontSize="10pt" KeyUp="textEditor_KeyDown"
+                                           KeyDown="textEditor_KeyDown"
+                                           />   
 
                     <avalonEdit:TextEditor Margin="1" Grid.Row="1"  Background="#FFB8B8B8"
                     xmlns:avalonEdit="http://icsharpcode.net/sharpdevelop/avalonedit"
@@ -72,8 +84,8 @@
                    IsReadOnly="True"
                     SyntaxHighlighting="C#"   
                     FontFamily="Consolas"
-                    FontSize="10pt"/>   
-                    <Label Grid.Row="2" Height="30" Content="File 1.tm8" DockPanel.Dock="Bottom"></Label>
+                    FontSize="10pt"/>
+                    <Label Grid.Row="2" Height="30" Content="{Binding CurrentFile.FileName}" DockPanel.Dock="Bottom"></Label>
                 </Grid>
 
             </Grid>
